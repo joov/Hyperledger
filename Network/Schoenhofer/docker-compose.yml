@@ -270,11 +270,16 @@ services:
     working_dir: /home/node/app
     environment:
       - NODE_ENV=production
+      - http_proxy=${http_proxy}
+      - https_proxy=${https_proxy}
+      - no_proxy=${no_proxy}
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/node/app
+
     volumes:
       - ../node:/home/node/app
     ports:
       - 8080:8080
-    command: npm install && monitor.sh
+    command: entrypoint.sh
     networks:
       - basic
     depends_on:

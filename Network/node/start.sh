@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 rm -rf tmp/fabric-client-kvs_peerOrg*
 
