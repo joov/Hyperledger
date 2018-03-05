@@ -1,1 +1,1 @@
-./createworkplaces.sh && ./createusers.sh && ./populateLedger.sh && ./query.sh
+./createworkplaces.sh && ./createusers.sh && ./createdocuments.sh && ./createbinaryentries.sh

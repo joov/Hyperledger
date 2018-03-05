@@ -6,9 +6,10 @@
 version: '2'
 
 networks:
-  basic:
+  demo:
  
 services:
+
   ca1:
     image: hyperledger/fabric-ca
     environment:
@@ -16,15 +17,15 @@ services:
       - FABRIC_CA_SERVER_CA_NAME=ca-amt1
       - FABRIC_CA_SERVER_TLS_ENABLED=true
       - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.amt1.aufsicht.de-cert.pem
-      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/765015ee62d8ddc329e4a05cd5b6d68375a46c2d63cbfc340a02c51055137ed5_sk
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/cdbe4ce65e1f44cbe322bda9b877b3d7911e5633624b534567c84a975ae9d78d_sk
     ports:
       - "7054:7054"
-    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.amt1.aufsicht.de-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/765015ee62d8ddc329e4a05cd5b6d68375a46c2d63cbfc340a02c51055137ed5_sk -b admin:adminpw -d'
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.amt1.aufsicht.de-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/cdbe4ce65e1f44cbe322bda9b877b3d7911e5633624b534567c84a975ae9d78d_sk -b admin:adminpw -d'
     volumes:
       - ./crypto-config/peerOrganizations/amt1.aufsicht.de/ca/:/etc/hyperledger/fabric-ca-server-config
     container_name: ca_amt1
     networks:
-      - basic
+      - demo
  
   ca2:
     image: hyperledger/fabric-ca
@@ -33,15 +34,15 @@ services:
       - FABRIC_CA_SERVER_CA_NAME=ca-amt2
       - FABRIC_CA_SERVER_TLS_ENABLED=true
       - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.amt2.aufsicht.de-cert.pem
-      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/4fadd2843ca72e06a3b08334c2f62823a63776be2371c31670b1b56b5a4674c5_sk
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/789ef2c2b52a9d24ec2ced58f799384697f25f86d0f8ac6a65c35c9b8189cae4_sk
     ports:
       - "8054:7054"
-    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.amt2.aufsicht.de-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/4fadd2843ca72e06a3b08334c2f62823a63776be2371c31670b1b56b5a4674c5_sk -b admin:adminpw -d'
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.amt2.aufsicht.de-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/789ef2c2b52a9d24ec2ced58f799384697f25f86d0f8ac6a65c35c9b8189cae4_sk -b admin:adminpw -d'
     volumes:
       - ./crypto-config/peerOrganizations/amt2.aufsicht.de/ca/:/etc/hyperledger/fabric-ca-server-config
     container_name: ca_amt2
     networks:
-      - basic
+      - demo
 
   ca3:
     image: hyperledger/fabric-ca
@@ -50,17 +51,16 @@ services:
       - FABRIC_CA_SERVER_CA_NAME=ca-amt3
       - FABRIC_CA_SERVER_TLS_ENABLED=true
       - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.amt3.aufsicht.de-cert.pem
-      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/be378e6e52da851fb429618fc05feb78b1d3d5f4ac02891cd0f2ae5f22de9750_sk
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/efdb1f1b28139124e1b6100770fc315a1ee0112c8d23372a24b63e5c5f5009dd_sk
     ports:
       - "9054:7054"
-    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.amt3.aufsicht.de-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/be378e6e52da851fb429618fc05feb78b1d3d5f4ac02891cd0f2ae5f22de9750_sk -b admin:adminpw -d'
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.amt3.aufsicht.de-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/efdb1f1b28139124e1b6100770fc315a1ee0112c8d23372a24b63e5c5f5009dd_sk -b admin:adminpw -d'
     volumes:
       - ./crypto-config/peerOrganizations/amt3.aufsicht.de/ca/:/etc/hyperledger/fabric-ca-server-config
     container_name: ca_amt3
     networks:
-      - basic      
-     
-  
+      - demo   
+      
   orderer.aufsicht.de:
     container_name: orderer.aufsicht.de
     image: hyperledger/fabric-orderer
@@ -68,7 +68,7 @@ services:
       - ORDERER_GENERAL_LOGLEVEL=debug
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_GENESISMETHOD=file
-      - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.block
+      - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/vertraulich.block
       - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
       - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/msp/orderer/msp
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/orderer
@@ -82,7 +82,7 @@ services:
         - ./crypto-config/peerOrganizations/amt2.aufsicht.de/peers/peer1.amt2.aufsicht.de/:/etc/hyperledger/msp/peerOrg2
         - ./crypto-config/peerOrganizations/amt3.aufsicht.de/peers/peer1.amt3.aufsicht.de/:/etc/hyperledger/msp/peerOrg3
     networks:
-      - basic
+      - demo
       
   peer1.amt1.aufsicht.de:
     container_name: peer1.amt1.aufsicht.de
@@ -122,7 +122,7 @@ services:
       - orderer.aufsicht.de
       - couchdb
     networks:
-      - basic
+      - demo
       
   peer1.amt2.aufsicht.de:
     container_name: peer1.amt2.aufsicht.de
@@ -162,7 +162,7 @@ services:
       - orderer.aufsicht.de
       - couchdb
     networks:
-      - basic
+      - demo
       
   peer1.amt3.aufsicht.de:
     container_name: peer1.amt3.aufsicht.de
@@ -201,7 +201,7 @@ services:
       - orderer.aufsicht.de
       - couchdb
     networks:
-      - basic
+      - demo
 
   couchdb:
     container_name: couchdb
@@ -214,7 +214,7 @@ services:
     ports:
       - 5984:5984
     networks:
-      - basic
+      - demo
 
   cli:
     container_name: cli
@@ -228,7 +228,6 @@ services:
       - CORE_PEER_ADDRESS=peer1.amt1.aufsicht.de:7051
       - CORE_PEER_LOCALMSPID=Org1MSP
       - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/amt1.aufsicht.de/users/Admin@amt1.aufsicht.de/msp
-#      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations
       - CORE_CHAINCODE_KEEPALIVE=10
     working_dir: /opt/gopath/src/docutracker
     command:  /bin/bash
@@ -239,7 +238,7 @@ services:
         - ./config:/etc/hyperledger/configtx/
         - ./go/src/docutracker/:/opt/gopath/src/docutracker/
     networks:
-        - basic
+        - demo
     depends_on:
       - orderer.aufsicht.de
       - peer1.amt1.aufsicht.de
@@ -259,9 +258,9 @@ services:
       - 3306:3306
     volumes:
        - /var/run/:/host/var/run/
-       - ../db/docker-entrypoint-initdb.d /docker-entrypoint-initdb.d
+       - ../db/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     networks:
-      - basic
+      - demo
       
   node:
     container_name: node
@@ -281,23 +280,20 @@ services:
       - 8080:8080
     command: entrypoint.sh
     networks:
-      - basic
+      - demo
     depends_on:
       - mysql
       
-  #mysql:
-  #  container_name: mysql
-  #  image: mysql/mysql-server
-  #  tty: true
-  #  environment:
-  #      - MYSQL_ROOT_HOST=%
-  #      - MYSQL_ROOT_PASSWORD=123456
-  #      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-  #  command: /bin/bash
-  #  volumes:
-  #      - /var/run/:/host/var/run/
-  #      - ./database/fabricexplorer.sql:/docker-entrypoint-initdb.d/fabricexplorer.sql:ro
-  #  ports:
-  #      - 3306:3306
-  #  networks:
-  #     - basic
+  fabric-rest:
+    container_name: fabric-rest
+    image: fabric-rest:schoenhofer
+    working_dir: /
+    ports:
+      - 3000:3000
+    command: node node_modules/fabric-rest -d
+    volumes:
+      - ./crypto-config:/creds
+    networks:
+      - demo
+    depends_on:
+      - orderer.aufsicht.de

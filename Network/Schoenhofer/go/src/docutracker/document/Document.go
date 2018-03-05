@@ -40,9 +40,10 @@ type Document struct {
 	Owner string
 	CurrentOwner string
 	SecurityLevel int
+	DatablobID string
 }
 
-func Get(stub shim.ChaincodeStubInterface, args []string) (string, error){
+func get(stub shim.ChaincodeStubInterface, args []string) (string, error){
 
 	if len(args) != 1 {
 		return "", fmt.Errorf("Inccorrect arguments. Expecting a key.")
@@ -62,7 +63,7 @@ func Get(stub shim.ChaincodeStubInterface, args []string) (string, error){
 	return string(value), nil
 }
 
-func Set(stub shim.ChaincodeStubInterface, args []string) (string, error) {
+func set(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 
 	if len(args) != 2 {
 		return "", fmt.Errorf("Incorrect arguments. Expecting a key and a value.")

@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 #!/bin/sh
 
+=======
+>>>>>>> upstream/master
 while [ 1 ];do
     sleep 10
     process_num=$(ps -elf | grep -v grep | grep main.js | wc -l)

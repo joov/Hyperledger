@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+  <link rel="stylesheet" href="https://v40.pingendo.com/assets/bootstrap/bootstrap-4.0.0-beta.1.css" type="text/css"> </head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+<body class="bg-secondary" onload="preloadItems()">
+
+  <div class="py-5-fluid">
+    <div class="container">
+
+      <div class="row">
+        <h1 class="display-1 text-light" id="workplace">Lade...</h1>
+      </div>
+
+      <div class="row">
+
+        <div class="col">
+            <iframe id="documents" src="documents.html" width="800" height="600" frameborder="0"></iframe>
+        </div>
+
+        <div class="col">
+            <div class="container">
+
+            <div class="row">
+              <div class="col">
+                <span class="lead text-light">Benutzer am Standort:</span>
+                <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Verfügbare Benutzer
+                </button>
+                &nbsp;
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="userlist"></div>
+                </div>
+              </div>
+            </div>
+
+              <div class="row"><div class="col">&nbsp;</div></div>
+
+            <div class="row">
+              <div class="col">
+                <span class="lead text-light">führt die Aktion aus:</span>
+                <div class="dropdown">
+                  <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Verfügbare Aktionen
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="actionlist">
+                    <a class="dropdown-item" onclick="addActionItem({'action':'lendDocument'})">Ausleihe</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" onclick="addActionItem({'action':'returnDocument'})">Rückgabe</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+              <div class="row"><div class="col">&nbsp;</div></div>
+
+              <div class="row">
+              <div class="col">
+                <span class="lead text-light">mit den Dokumenten:</span>
+              </div>
+              <div class="col">
+                <div class="dropdown">
+                  <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Verfügbare Dokumente
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="doclist">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+              <div class="row">
+              <div class="col">
+                <span class="lead text-light">Chaincode-Methode:</span>
+                <div class="alert alert-light" role="alert" id="actionDescription">
+                  ...
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <button class="btn btn-danger" type="button" id="dropdownMenuButton" onclick="clearSelection()">
+                  Löschen
+                </button>
+              </div>
+              <div class="col">
+                <button type="button" class="btn btn-success" onclick="executeChainCode()">Ausführen</button>
+              </div>
+            </div>
+
+          </div>
+          </div>
+      </div>
+    </div>
+
+    </div>
+  </div>
+
+  <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+  <script src="js/core.js"></script>
+  <script>
+
+    var workplace = window.location.href.split('?')[1].split('=')[1].replace("#",'')
+
+    function preloadItems()
+    {
+        loadWorkplace()
+        preloadUsers()
+        preloadDocs()
+        addActionItem({})
+    }
+
+    function loadWorkplace()
+    {
+        dataObj = {proposal: {chaincodeId: 'schoenhoferchaincode', fcn: "queryAllWorkplaces", args: [""]}};
+        invokeChainMethod("POST", "channels/vertraulich/transactions", dataObj, showWorkplace)
+    }
+
+    function preloadDocs() {
+        dataObj = {proposal: {chaincodeId: 'schoenhoferchaincode', fcn: "queryAllDocs", args: [""]}};
+        invokeChainMethod("POST", "channels/vertraulich/transactions", dataObj, showDocs)
+    }
+
+    function preloadUsers() {
+        dataObj = {proposal: {chaincodeId: 'schoenhoferchaincode', fcn: "queryAllUser", args: [""]}};
+        invokeChainMethod("POST", "channels/vertraulich/transactions", dataObj, showUsers)
+    }
+
+    function showWorkplace(_data) {
+        data = eval(_data.transactionEnvelope.payload.data.actions["0"].payload.action.proposal_response_payload.extension.response.payload);
+        $.each(data, function(i, place) {
+            if (place.Key == workplace)
+            {
+                $('#workplace').text("")
+                $('#workplace').append(place.Record.Name + ", " + place.Record.Place)
+            }
+        })
+    }
+
+    function showDocs(_data) {
+        data = eval(_data.transactionEnvelope.payload.data.actions["0"].payload.action.proposal_response_payload.extension.response.payload);
+        $('#doclist').html("")
+        $.each(data, function(i, doc) { $('#doclist').append('<a class="dropdown-item" onclick="addActionItem({\'document\':\''+doc.Key+'\'})"><i><b>"'+doc.Record.Title+'"</b></i>  Stufe: ' + doc.Record.SecurityLevel +
+        ' - von ' + doc.Record.Owner + ', derzeit bei ' + doc.Record.CurrentOwner + '</a>')
+        })
+    }
+
+    function showUsers(_data) {
+        data = eval(_data.transactionEnvelope.payload.data.actions["0"].payload.action.proposal_response_payload.extension.response.payload);
+        $.each(data, function(i, user) {
+                if (user.Record.Workplace == workplace) {
+                    fullName = user.Key + ": <b>" + user.Record.FirstName + " " + user.Record.LastName + "</b> Sicherheitsstufe " + user.Record.SecurityLevel
+                    $('#userlist').append('<a class="dropdown-item" onclick="addActionItem({\'user\':\''+user.Key+'\'})">' + fullName + '</a>')
+                }
+            }
+        )
+
+    }
+
+    var settings;
+    clearSelection()
+
+    function addActionItem(itm) {
+      
+      for (var property in itm) {
+          val = itm[property]
+          if (val!=undefined)
+          {
+            settings[property] = val
+          }
+      }
+
+      console.log(JSON.stringify(settings))
+        
+      $('#actionDescription').html('')
+      $('#actionDescription').text('')
+
+      $('#actionDescription').append("<div class='alert alert-dark'>" + settings['action'] + "</div> ")
+      $('#actionDescription').append("<div class='alert alert-dark'>" + settings['document'] + "</div> ")
+      $('#actionDescription').append("<div class='alert alert-dark'>" + settings['user'] + "</div> ")
+    }
+
+    function executeChainCode()
+    {
+      dataObj = {proposal: {chaincodeId: 'schoenhoferchaincode', fcn: settings['action'], args: [settings['document'], settings['user']]}};
+      invokeChainMethod("POST", "channels/vertraulich/transactions", dataObj, showResult)
+    }
+
+    function showResult(data)
+    {
+        $('#documents').attr('src', $('#documents').attr('src'));
+        preloadDocs()
+
+        if (settings["action"] == "lendDocument")
+        {
+            // now query the data for it
+            loadDocument()
+        }
+
+    }
+
+    function loadDocument()
+    {
+        dataObj = {proposal: {chaincodeId: 'schoenhoferchaincode', fcn: "getData", args: [settings["document"], settings["user"]]}};
+        invokeChainMethod("POST", "channels/vertraulich/transactions", dataObj, showPDF)
+    }
+
+    function showPDF(_data) {
+        data = _data.transactionEnvelope.payload.data.actions[0].payload.action.proposal_response_payload.extension.response.payload
+        window.open('data:application/pdf;base64,'+data, '_blank')
+    }
+
+    function clearSelection()
+    {
+        settings = {'user':'...', 'action':'...','document':'...'}
+        addActionItem({})
+    }
+
+
+  </script>
+
+</body>
+
+</html>

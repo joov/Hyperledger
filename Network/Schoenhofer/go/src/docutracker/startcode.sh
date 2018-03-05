@@ -1,1 +1,4 @@
-peer chaincode install -p . -n mycc -v 0 && peer chaincode instantiate -n mycc -v 0 -c '{"Args":[]}' -C vertraulich
+CHANNELNAME=vertraulich
+CHAINCODENAME=schoenhoferchaincode
+VERSION=$1
+peer chaincode install -p . -n $CHAINCODENAME -v $VERSION && peer chaincode instantiate -n $CHAINCODENAME -v $VERSION -c '{"Args":[""]}' -C $CHANNELNAME
